@@ -1,38 +1,35 @@
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import './index.scss';
+import './styles/index.scss';
+
 import { HomeAsync } from './pages/Home/Home.async';
 import { AboutAsync } from './pages/About/About.async';
-import { Link } from 'react-router-dom';
-import { Suspense } from 'react';
+import { Navigation } from './components/Navigation';
+import { useTheme } from './hooks/useTheme';
 
 export const App = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className='app'>
-      <nav style={{ marginBottom: '20px'}}>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-      </nav>
+    <div className={`app ${theme}`}>
+      <Navigation />
 
-      <Routes>
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<div>Loading Home Page...</div>}>
-                <HomeAsync />
-              </Suspense>
-            }
-          />
+      <button type='button' onClick={toggleTheme}>TOGGLE THEME</button>
 
-          <Route
-            path="/about"
-            element={
-              <Suspense fallback={<div style={{ background: 'red'}}>Loading About Page...</div>}>
-                <AboutAsync />
-              </Suspense>
-            }
-          />
-      </Routes>
+      <Suspense fallback={<div>Loading Home Page...</div>}>
+        <Routes>
+            <Route
+              path="/"
+              element={<HomeAsync />}
+            />
+
+            <Route
+              path="/about"
+              element={<AboutAsync />}
+            />
+        </Routes>
+      </Suspense>
     </div>
   )
 }
